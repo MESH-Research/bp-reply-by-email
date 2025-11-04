@@ -372,18 +372,6 @@ class BP_Reply_By_Email {
 			// Account for BP 3.0 change to wpautop().
 			$html = substr_replace( $retval, '', $pos - 3, strlen( $notice ) + 7 );
 
-			/*
-			 * Remove trailing <br> after <hr>. Remove in BP 3.3.0+.
-			 *
-			 * See https://buddypress.trac.wordpress.org/ticket/7989
-			 */
-			$hrpos = strpos( $html, '<hr ' );
-			$hrlen = strpos( $html, "<br>\n", $hrpos ) - $hrpos;
-			// Sanity check.
-			if ( $hrlen < 50 ) {
-				$html = substr_replace( $html, '', $hrpos + $hrlen, 4 );
-			}
-
 		// BuddyPress < 3.0.
 		} else {
 			$html = substr_replace( $retval, '', $pos, strlen( $notice ) );
