@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @package BP_Reply_By_Email
  * @subpackage Classes
  */
+#[AllowDynamicProperties]
 class BP_Reply_By_Email {
 
 	/**
@@ -303,11 +304,8 @@ class BP_Reply_By_Email {
 			// Fetch current 'From' email address.
 			$from = $email->get_from()->get_address();
 
-			// Grab the host.
-			$host = substr( $from, strpos( $from, '@' ) + 1 );
-
-			// Set the custom From email address and name.
-			$email->set_from( "noreply@{$host}", bp_core_get_user_displayname( $this->listener->user_id ) );
+			// Set the custom From name.
+			$email->set_from( $from, bp_core_get_user_displayname( $this->listener->user_id ) );
 		}
 
 		// Set our custom 'Reply-To' email header.
@@ -373,18 +371,6 @@ class BP_Reply_By_Email {
 		if ( false !== strpos( $retval, $notice . '</p>' ) ) {
 			// Account for BP 3.0 change to wpautop().
 			$html = substr_replace( $retval, '', $pos - 3, strlen( $notice ) + 7 );
-
-			/*
-			 * Remove trailing <br> after <hr>. Remove in BP 3.3.0+.
-			 *
-			 * See https://buddypress.trac.wordpress.org/ticket/7989
-			 */
-			$hrpos = strpos( $html, '<hr ' );
-			$hrlen = strpos( $html, "<br>\n", $hrpos ) - $hrpos;
-			// Sanity check.
-			if ( $hrlen < 50 ) {
-				$html = substr_replace( $html, '', $hrpos + $hrlen, 4 );
-			}
 
 		// BuddyPress < 3.0.
 		} else {
